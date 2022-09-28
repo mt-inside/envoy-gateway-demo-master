@@ -1,0 +1,70 @@
+# How to authN end-users (peer machines are authN'd by the default mTLS config)
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: jwt-example
+spec:
+  selector:
+    matchLabels:
+      app: http-log
+  jwtRules:
+    - issuer: "example.local"
+      # By default looks in Authorization header, and for a "Bearer " prefix
+      outputPayloadToHeader: "x-end-user"
+      forwardOriginalToken: true
+      jwks: |
+        {
+          "keys": [
+            {
+              "kty": "RSA",
+              "alg": "RS256",
+              "n": "z2-TDAPryg1mN6Y4tkdkrtH3h31xSyuyXtCpQL2WbDMwUngFDdFTOaedSsfCU-O1LnaGV1h8JP4VisIcrpqNa6933Q_jk8-dRb0IFtLvpPR4-U7yvJNU_qENO1FuFjQvmX2D5gjaSCf2kcF4YXQcIbrMQBWV5ACP9a-h3QhnIK4YvmMv6a7aNXj18Q2j0AkzrE-pka0MifQXsd7fE6NdPjtAEyzPtLxsRItMlvdcvNLrHM9g2KDYbwE6XxhOAgYWjotRkcxRrDGcjnUKAyfSMlsGTAtd2CISPwnSLsACU62dffNHY7HiKCmomi89cHCiobrEWQVB7DWX_ZHO0iubVw",
+              "e": "AQAB"
+            }
+          ]
+        }
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-all-public
+spec:
+  selector:
+    matchLabels:
+      app: http-log
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            paths: ["/public"]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-authd-all
+spec:
+  selector:
+    matchLabels:
+      app: http-log
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            requestPrincipals: ["*"]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-two-admin
+spec:
+  selector:
+    matchLabels:
+      app: http-log
+  action: DENY
+  rules:
+    - from:
+        - source:
+            notRequestPrincipals: ["example.local/two"]
+      to:
+        - operation:
+            paths: ["/admin"]

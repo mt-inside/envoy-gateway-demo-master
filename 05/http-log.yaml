@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: http-log
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-log
+  labels:
+    app: http-log
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-log
+  template:
+    metadata:
+      labels:
+        app: http-log
+    spec:
+      serviceAccountName: http-log
+      containers:
+        - name: http-log
+          image: docker.io/mtinside/http-log:0.7.6
+          imagePullPolicy: Always
+          args: [ "-t", "-M", "-j=/etc/jwt/public.pem", "-o=pretty" ]
+          ports:
+            - name: http-service
+              containerPort: 8080
+          volumeMounts:
+            - name: jwt-validation-key
+              mountPath: /etc/jwt
+      volumes:
+        - name: jwt-validation-key
+          configMap:
+            name: jwt-validation-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-log
+spec:
+  selector:
+    app: http-log
+  ports:
+    - name: http-service
+      protocol: TCP
+      port: 80
+      targetPort: http-service

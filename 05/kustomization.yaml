@@ -1,0 +1,8 @@
+resources:
+  - http-log.yaml
+  - sleep.yaml
+
+configMapGenerator:
+  - name: jwt-validation-key
+    files:
+      - ../41/pki/public.pem
