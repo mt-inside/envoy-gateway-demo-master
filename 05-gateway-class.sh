@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 source 00-common.sh
 
 # NB: Must (v 0.2.0) be applied in order, due to #301
