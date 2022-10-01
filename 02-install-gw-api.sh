@@ -8,3 +8,8 @@ source 00-common.sh
 kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v${GW_API_VERSION}/experimental-install.yaml
 
 watch -n1 kubectl get pods --namespace gateway-system
+
+kubectl get crd
+echo
+echo
+kubectl api-resources | grep gateway
