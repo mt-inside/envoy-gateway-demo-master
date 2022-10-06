@@ -1,0 +1,17 @@
+# See: https://github.com/envoyproxy/gateway/blob/main/internal/provider/kubernetes/config/prometheus/monitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  namespace: envoy-gateway-system
+  name: envoy-gateway-instances
+spec:
+  namespaceSelector:
+    matchNames: [envoy-gateway-system]
+  selector:
+    matchLabels:
+      app: envoy
+  podMetricsEndpoints:
+    - targetPort: 19000 # FIXME currently broken, as Envoy's admin socket is bound to localhost
+      path: /stats/prometheus
+      scheme: http
+      interval: 10s

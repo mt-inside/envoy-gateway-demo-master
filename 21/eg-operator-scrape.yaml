@@ -1,0 +1,19 @@
+# See: https://github.com/envoyproxy/gateway/blob/main/internal/provider/kubernetes/config/prometheus/monitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  namespace: envoy-gateway-system
+  name: envoy-gateway-operator
+spec:
+  namespaceSelector:
+    matchNames: [envoy-gateway-system]
+  selector:
+    matchLabels:
+      control-plane: envoy-gateway
+  endpoints:
+    - port: https
+      scheme: https
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      tlsConfig:
+        insecureSkipVerify: true
+      interval: 10s
