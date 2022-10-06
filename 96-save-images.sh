@@ -1,6 +1,6 @@
 source 00-common.sh
 
-dir="img/${ISTIO_VERSION}"
+dir="img/${ENVOY_GW_VERSION}"
 mkdir -p $dir
 
 minikube image ls | while read i
