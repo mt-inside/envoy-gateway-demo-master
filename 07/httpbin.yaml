@@ -12,6 +12,14 @@ spec:
         - path:
             type: PathPrefix
             value: /httpbin
+      # Needed to make httpbin work when path-hosted
+      # Not supported yet - you'll get a 500 with a body that complains about not knowing the filter type
+      # filters:
+      #   - type: URLRewrite
+      #     urlRewrite:
+      #       path:
+      #         type: ReplacePrefixMatch
+      #         replacePrefixMatch: /
       backendRefs:
         - group: ""
           kind: Service
