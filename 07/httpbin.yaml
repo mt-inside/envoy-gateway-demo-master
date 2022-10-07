@@ -4,7 +4,7 @@ metadata:
   name: httpbin
 spec:
   parentRefs:
-    - name: insecure-port
+    - name: insecure
   hostnames:
     - "www.example.com"
   rules:
