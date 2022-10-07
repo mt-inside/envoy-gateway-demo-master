@@ -6,4 +6,4 @@ source 00-common.sh
 kubectl apply -f 06/gateway.yaml
 
 kubectl -n default get gateway -o wide
-{ echo "^^ never says 'ready'"; } 2> /dev/null
+{ echo "^^ doesn't say 'ready' unless you let the service's LB be created, eg with minikube tunnel. Still works though."; } 2> /dev/null
