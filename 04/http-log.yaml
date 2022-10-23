@@ -22,7 +22,7 @@ spec:
       serviceAccountName: http-log
       containers:
         - name: http-log
-          image: docker.io/mtinside/http-log:0.7.6
+          image: docker.io/mtinside/http-log:0.7.10
           imagePullPolicy: Always
           args: [ "-t", "-M", "-j=/etc/jwt/public.pem", "-o=pretty" ]
           ports:
